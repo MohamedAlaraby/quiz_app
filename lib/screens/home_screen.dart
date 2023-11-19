@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quiz_app/constants.dart';
 import 'package:quiz_app/manage/edit_question_cubit/edit_question_cubit.dart';
 import 'package:quiz_app/manage/get_gen_questions_cubit/get_gen_questions_cubit.dart';
 import 'package:quiz_app/screens/add_question_screen.dart';
@@ -23,6 +25,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     BlocProvider.of<GetGenQuestionsCubit>(context).getGenQuestions();
     super.initState();
+  }
+
+  var userId = FirebaseAuth.instance.currentUser!.uid;
+  bool isUserAdmin(userId) {
+    if (userId == adminCodedId) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override
@@ -71,22 +82,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     cubit.nextQuestionPressed(context, cubit.questions);
                   },
                 ),
-                CustomButton(
-                  text: "Edit this question",
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BlocProvider<EditQuestionCubit>(
-                          create: (context) => EditQuestionCubit(),
-                          child: EditQuestionScreen(
-                            question: cubit.questions[cubit.questionIndex],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                isUserAdmin(userId)
+                    ? CustomButton(
+                        text: "Edit this question",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  BlocProvider<EditQuestionCubit>(
+                                create: (context) => EditQuestionCubit(),
+                                child: EditQuestionScreen(
+                                  question:
+                                      cubit.questions[cubit.questionIndex],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : const SizedBox(),
               ],
             );
           } else if (state is GetGenQuestionsFailureState) {
@@ -106,16 +121,18 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         },
       ),
-      floatingActionButton: AddNewQuesButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AddQuestionScreen(),
-            ),
-          );
-        },
-      ),
+      floatingActionButton: isUserAdmin(userId)
+          ? AddNewQuesButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddQuestionScreen(),
+                  ),
+                );
+              },
+            )
+          : const SizedBox(),
     );
   }
 }

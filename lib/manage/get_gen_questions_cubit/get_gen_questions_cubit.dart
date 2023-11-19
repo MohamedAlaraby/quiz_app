@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/core/firebase_service.dart';
-import 'package:quiz_app/core/service_locator.dart';
+import 'package:quiz_app/core/utils/service_locator.dart';
 import 'package:quiz_app/constants.dart';
 import 'package:quiz_app/models/quiz_model.dart';
 import 'package:quiz_app/widgets/score_dialog.dart';
