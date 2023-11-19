@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+
 import 'package:quiz_app/models/quiz_model.dart';
 
-
 class DBConnect {
-  final String baseUrl = "";
+ 
 
   var url = Uri.parse(
       "https://quiz-app-50bcb-default-rtdb.firebaseio.com/genQuestions.json");
@@ -34,14 +34,13 @@ class DBConnect {
         },
       ),
     );
-   
   }
 
   Future<List<QuizModel>> fetchGenQuestion() async {
     List<QuizModel> questions = [];
+    http.Response response = await http.get(url);
     try {
-      http.Response reponse = await http.get(url);
-      var data = jsonDecode(reponse.body) as Map<String, dynamic>;
+      var data = jsonDecode(response.body) as Map<String, dynamic>;
       data.forEach(
         (key, value) {
           questions.add(
@@ -54,10 +53,9 @@ class DBConnect {
           );
         },
       );
-     
       return questions;
     } catch (error) {
-      throw Exception("Error is $error");
+      throw Exception(error.toString);
     }
   }
 }

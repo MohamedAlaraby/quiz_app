@@ -1,176 +1,121 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:quiz_app/constants.dart';
-
+import 'package:quiz_app/manage/edit_question_cubit/edit_question_cubit.dart';
 import 'package:quiz_app/manage/get_gen_questions_cubit/get_gen_questions_cubit.dart';
-
+import 'package:quiz_app/screens/add_question_screen.dart';
+import 'package:quiz_app/screens/edit_question_screen.dart';
+import 'package:quiz_app/widgets/add_new_question_button.dart';
+import 'package:quiz_app/widgets/custom_appbar.dart';
 import 'package:quiz_app/widgets/my_divider.dart';
-import 'package:quiz_app/widgets/next_question_button.dart';
-import 'package:quiz_app/widgets/options_widget.dart';
+import 'package:quiz_app/widgets/custom_button.dart';
+import 'package:quiz_app/widgets/get_ques_options_widget.dart';
 import 'package:quiz_app/widgets/question_widget.dart';
-import 'package:quiz_app/widgets/score_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int questionIndex = 0;
-  bool isAnOptionPressed = false;
-  int score = 0;
-  bool isAnOptionAlreadySelected = false;
+  @override
+  void initState() {
+    BlocProvider.of<GetGenQuestionsCubit>(context).getGenQuestions();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GetGenQuestionsCubit, GetGenQuestionsState>(
-      builder: (context, state) {
-        var cubit = BlocProvider.of<GetGenQuestionsCubit>(context);
-        if (state is GetGenQuestionsSuccessState) {
-          return Scaffold(
-            appBar: AppBar(
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(
-                    18,
-                  ),
-                  child: Text(
-                    "Score $score",
-                    style: const TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-              ],
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: const Text(
-                "Quiz App",
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-            ),
-            body: Column(
+    return Scaffold(
+      body: BlocBuilder<GetGenQuestionsCubit, GetGenQuestionsState>(
+        builder: (context, state) {
+          var cubit = BlocProvider.of<GetGenQuestionsCubit>(context);
+          if (state is GetGenQuestionsSuccessState ||
+              state is UpdateUiStateSuccessState) {
+            return Column(
               children: [
+                CustomAppBar(score: cubit.score),
                 QuestionWidget(
-                  indexAction: questionIndex,
-                  question: state.questions[questionIndex].title,
-                  totalQuestion: state.questions.length,
+                  indexAction: cubit.questionIndex,
+                  question: cubit.questions[cubit.questionIndex].title,
+                  totalQuestion: cubit.questions.length,
                 ),
                 const MyDivider(),
                 const SizedBox(height: 20),
                 for (var optionIndex = 0;
-                    optionIndex < state.questions[questionIndex].options.length;
+                    optionIndex <
+                        cubit.questions[cubit.questionIndex].options.length;
                     optionIndex++)
                   OptionsWidget(
                     onPressed: () {
                       //When the sudent press on certain item.
-                      checkOnAnswerAndUpdate(
-                        state.questions[questionIndex].options.values
-                                .toList()[optionIndex] ==
-                            true,
+                      cubit.checkOnAnswerAndUpdate(
+                        cubit.questions[cubit.questionIndex].options.values
+                            .toList()[optionIndex],
                       );
                     },
-                    option: state.questions[questionIndex].options.keys
+                    option: cubit.questions[cubit.questionIndex].options.keys
                         .toList()[optionIndex],
-                    color: getColorOfOptionWidget(optionIndex, state.questions),
+                    color: cubit.getColorOfOptionWidget(
+                      optionIndex,
+                      cubit.questions,
+                    ),
                   ),
+                const SizedBox(
+                  height: 30,
+                ),
+                CustomButton(
+                  text: "Next Question",
+                  onPressed: () {
+                    cubit.nextQuestionPressed(context, cubit.questions);
+                  },
+                ),
+                CustomButton(
+                  text: "Edit this question",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider<EditQuestionCubit>(
+                          create: (context) => EditQuestionCubit(),
+                          child: EditQuestionScreen(
+                            question: cubit.questions[cubit.questionIndex],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ],
-            ),
-            floatingActionButton: NextQuestionWidget(
-              onPressed: () {
-                nextQuestionPressed(context, state.questions);
-              },
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
-          );
-        
-        } else if (state is GetGenQuestionsFailureState) {
+            );
+          } else if (state is GetGenQuestionsFailureState) {
             return Center(
-              child: Text("Error is ${state.errMessage}"),
+              child: Text(
+                "Error is ${state.errMessage}",
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
             );
           } else {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
-      },
+        },
+      ),
+      floatingActionButton: AddNewQuesButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddQuestionScreen(),
+            ),
+          );
+        },
+      ),
     );
   }
-
-  void nextQuestionPressed(BuildContext context, list) {
-    if (questionIndex < list.length - 1) {
-      if (isAnOptionPressed == true) {
-        setState(() {
-          questionIndex++;
-          isAnOptionPressed = false;
-          isAnOptionAlreadySelected = false;
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "You have to choose miminum one answer to continue",
-            ),
-            behavior: SnackBarBehavior.floating,
-            margin: EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
-          ),
-        );
-      }
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => ScoreDialog(
-          finalScore: score,
-          questionsLength: list.length,
-          onPressed: () {
-            startOver();
-          },
-        ),
-      );
-    }
-  }
-
-  Color getColorOfOptionWidget(int optionIndex, list) {
-    return isAnOptionPressed
-        ? list[questionIndex].options.values.toList()[optionIndex] == true
-            ? kCorrect
-            : kIncorrect
-        : kNeutral;
-  }
-
-  void checkOnAnswerAndUpdate(bool value) {
-    if (isAnOptionAlreadySelected == false) {
-      //The first time the student press on the option.
-      if (value == true) {
-        //The student answer is correct.
-        score++;
-      }
-      setState(() {
-        isAnOptionPressed = true;
-        isAnOptionAlreadySelected = true;
-      });
-    } else {
-      return;
-    }
-  }
-
-  void startOver() {
-    setState(() {
-      questionIndex = 0;
-      isAnOptionPressed = false;
-      score = 0;
-      isAnOptionAlreadySelected = false;
-    });
-    Navigator.pop(context);
-  }
-
-
-
-  }
+}

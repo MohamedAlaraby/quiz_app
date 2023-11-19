@@ -1,7 +1,6 @@
 part of 'get_gen_questions_cubit.dart';
 
-@immutable
-sealed class GetGenQuestionsState {}
+abstract class GetGenQuestionsState {}
 
 final class GetGenQuestionsInitial extends GetGenQuestionsState {}
 
@@ -10,11 +9,13 @@ class GetGenQuestionsSuccessState extends GetGenQuestionsState {
 
   GetGenQuestionsSuccessState({required this.questions});
 }
-class GetGenQuestionsLoadingState extends GetGenQuestionsState {
-  
-}
+
+class GetGenQuestionsLoadingState extends GetGenQuestionsState {}
+
 class GetGenQuestionsFailureState extends GetGenQuestionsState {
-  final String errMessage ;
+  final String errMessage;
 
   GetGenQuestionsFailureState({required this.errMessage});
 }
+
+class UpdateUiStateSuccessState extends GetGenQuestionsState {}

@@ -1,10 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class QuizModel {
-  final String id;
+  final String? id;
   final String title;
   final Map<String, bool> options;
+
   QuizModel({
-    required this.id,
+    this.id,
     required this.title,
     required this.options,
   });
