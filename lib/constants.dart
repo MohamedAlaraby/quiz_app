@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/models/quiz_model.dart';
+
 
 const kCorrect = Color(0xff32ab58);
 const kIncorrect = Color(0xFFab3232);

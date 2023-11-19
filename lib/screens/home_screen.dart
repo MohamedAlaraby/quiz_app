@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/constants.dart';
-import 'package:quiz_app/firebase_service.dart';
-import 'package:quiz_app/models/quiz_model.dart';
+
+import 'package:quiz_app/manage/get_gen_questions_cubit/get_gen_questions_cubit.dart';
+
 import 'package:quiz_app/widgets/my_divider.dart';
 import 'package:quiz_app/widgets/next_question_button.dart';
 import 'package:quiz_app/widgets/options_widget.dart';
@@ -20,92 +22,83 @@ class _HomeScreenState extends State<HomeScreen> {
   int score = 0;
   bool isAnOptionAlreadySelected = false;
 
-  var db = DBConnect();
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<QuizModel>>(
-        future: db.fetchGenQuestion(),
-
-        
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            print(snapshot.data);
-            return Scaffold(
-              appBar: AppBar(
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.all(
-                      18,
-                    ),
-                    child: Text(
-                      "Score $score",
-                      style: const TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
+    return BlocBuilder<GetGenQuestionsCubit, GetGenQuestionsState>(
+      builder: (context, state) {
+        var cubit = BlocProvider.of<GetGenQuestionsCubit>(context);
+        if (state is GetGenQuestionsSuccessState) {
+          return Scaffold(
+            appBar: AppBar(
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(
+                    18,
                   ),
-                ],
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                title: const Text(
-                  "Quiz App",
-                  style: TextStyle(
-                    fontSize: 20,
+                  child: Text(
+                    "Score $score",
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
                   ),
                 ),
+              ],
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: const Text(
+                "Quiz App",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
-              body: Column(
-                children: [
-                  QuestionWidget(
-                    indexAction: questionIndex,
-                    question: snapshot.data![questionIndex].title,
-                    totalQuestion: snapshot.data!.length,
+            ),
+            body: Column(
+              children: [
+                QuestionWidget(
+                  indexAction: questionIndex,
+                  question: state.questions[questionIndex].title,
+                  totalQuestion: state.questions.length,
+                ),
+                const MyDivider(),
+                const SizedBox(height: 20),
+                for (var optionIndex = 0;
+                    optionIndex < state.questions[questionIndex].options.length;
+                    optionIndex++)
+                  OptionsWidget(
+                    onPressed: () {
+                      //When the sudent press on certain item.
+                      checkOnAnswerAndUpdate(
+                        state.questions[questionIndex].options.values
+                                .toList()[optionIndex] ==
+                            true,
+                      );
+                    },
+                    option: state.questions[questionIndex].options.keys
+                        .toList()[optionIndex],
+                    color: getColorOfOptionWidget(optionIndex, state.questions),
                   ),
-                  const MyDivider(),
-                  const SizedBox(height: 20),
-                  for (var optionIndex = 0;
-                      optionIndex <
-                          snapshot.data![questionIndex].options.length;
-                      optionIndex++)
-                    OptionsWidget(
-                      onPressed: () {
-                        //When the sudent press on certain item.
-                        checkOnAnswerAndUpdate(
-                          snapshot.data![questionIndex].options.values
-                                  .toList()[optionIndex] ==
-                              true,
-                        );
-                      },
-                      option: snapshot.data![questionIndex].options.keys
-                          .toList()[optionIndex],
-                      color:
-                          getColorOfOptionWidget(optionIndex, snapshot.data!),
-                    ),
-                ],
-              ),
-              floatingActionButton: NextQuestionWidget(
-                onPressed: () {
-                  nextQuestionPressed(context, snapshot.data!);
-                },
-              ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerFloat,
-            );
-          } else if (snapshot.hasError) {
+              ],
+            ),
+            floatingActionButton: NextQuestionWidget(
+              onPressed: () {
+                nextQuestionPressed(context, state.questions);
+              },
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+          );
+        
+        } else if (state is GetGenQuestionsFailureState) {
             return Center(
-              child: Text("Error is ${snapshot.error.toString()} "),
+              child: Text("Error is ${state.errMessage}"),
             );
           } else {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
-        });
+      },
+    );
   }
 
   void nextQuestionPressed(BuildContext context, list) {
@@ -178,7 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.pop(context);
   }
 
-  void updateQuizModel(QuizModel quizModel) async {
-    await db.updateGenQuestion(quizModel);
+
+
   }
-}

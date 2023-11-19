@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/constants.dart';
+import 'package:quiz_app/core/service_locator.dart';
+import 'package:quiz_app/manage/get_gen_questions_cubit/get_gen_questions_cubit.dart';
 import 'package:quiz_app/screens/home_screen.dart';
 
 void main() {
-  runApp(const QuizApp());
+  setupServiceLocator();
+  runApp(
+    const QuizApp(),
+  );
 }
 
 class QuizApp extends StatelessWidget {
@@ -11,13 +17,16 @@ class QuizApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Quiz App',
-      theme: ThemeData.light().copyWith(
-        scaffoldBackgroundColor: kBackground,
+    return BlocProvider<GetGenQuestionsCubit>(
+      create: (context) => GetGenQuestionsCubit()..getGenQuestions(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Quiz App',
+        theme: ThemeData.light().copyWith(
+          scaffoldBackgroundColor: kBackground,
+        ),
+        home: const HomeScreen(),
       ),
-      home: const HomeScreen(),
     );
   }
 }

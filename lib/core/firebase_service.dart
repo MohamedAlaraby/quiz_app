@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:quiz_app/models/quiz_model.dart';
-import 'package:quiz_app/widgets/question_widget.dart';
+
 
 class DBConnect {
   final String baseUrl = "";
@@ -34,7 +34,7 @@ class DBConnect {
         },
       ),
     );
-    print("updated successfully");
+   
   }
 
   Future<List<QuizModel>> fetchGenQuestion() async {
@@ -54,7 +54,7 @@ class DBConnect {
           );
         },
       );
-      print(questions);
+     
       return questions;
     } catch (error) {
       throw Exception("Error is $error");
