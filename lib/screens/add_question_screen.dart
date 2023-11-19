@@ -5,6 +5,7 @@ import 'package:quiz_app/manage/add_gen_questions_cubit/add_gen_questions_cubit.
 import 'package:quiz_app/manage/get_gen_questions_cubit/get_gen_questions_cubit.dart';
 import 'package:quiz_app/models/quiz_model.dart';
 import 'package:quiz_app/widgets/add_ques_option_widget.dart';
+import 'package:quiz_app/widgets/custom_button.dart';
 import 'package:quiz_app/widgets/custom_text_field.dart';
 
 class AddQuestionScreen extends StatefulWidget {
@@ -30,6 +31,8 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
   bool _isOption3Correct = false;
   bool _isOption4Correct = false;
 
+  final GlobalKey<FormState> formKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,106 +49,119 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            CustomTextField(
-              hintText: 'Enter Question',
-              controller: _questionController,
-            ),
-            const SizedBox(height: 20.0),
-            AddQuestionOption(
-              hintText: 'Option1',
-              isOptionCorrect: _isOption1Correct,
-              optionController: _option1Controller,
-              onChange: (value) {
-                setState(() {
-                  _isOption1Correct = value!;
-                  // Uncheck the other options if this is checked
-                  if (_isOption1Correct) {
-                    _isOption2Correct = false;
-                    _isOption3Correct = false;
-                    _isOption4Correct = false;
-                  }
-                });
-              },
-            ),
-            const SizedBox(height: 8.0),
-            AddQuestionOption(
-              hintText: 'Option2',
-              optionController: _option2Controller,
-              isOptionCorrect: _isOption2Correct,
-              onChange: (value) {
-                setState(() {
-                  _isOption2Correct = value!;
-                  // Uncheck the other options if this is checked
-                  if (_isOption2Correct) {
-                    _isOption1Correct = false;
-                    _isOption3Correct = false;
-                    _isOption4Correct = false;
-                  }
-                });
-              },
-            ),
-            const SizedBox(height: 8.0),
-            AddQuestionOption(
-              hintText: 'Option3',
-              optionController: _option3Controller,
-              isOptionCorrect: _isOption3Correct,
-              onChange: (value) {
-                setState(() {
-                  _isOption3Correct = value!;
-                  // Uncheck the other options if this is checked
-                  if (_isOption3Correct) {
-                    _isOption1Correct = false;
-                    _isOption2Correct = false;
-                    _isOption4Correct = false;
-                  }
-                });
-              },
-            ),
-            const SizedBox(height: 8.0),
-            AddQuestionOption(
-              hintText: 'Option4',
-              optionController: _option4Controller,
-              isOptionCorrect: _isOption4Correct,
-              onChange: (value) {
-                setState(() {
-                  _isOption4Correct = value!;
-                  // Uncheck the other options if this is checked
-                  if (_isOption4Correct) {
-                    _isOption1Correct = false;
-                    _isOption2Correct = false;
-                    _isOption3Correct = false;
-                  }
-                });
-              },
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () async {
-                QuizModel quizModel = QuizModel(
-                  title: _questionController.text,
-                  options: {
-                    _option1Controller.text: _isOption1Correct,
-                    _option2Controller.text: _isOption2Correct,
-                    _option3Controller.text: _isOption3Correct,
-                    _option4Controller.text: _isOption4Correct,
-                  },
-                );
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              CustomTextField(
+                hintText: 'Enter Question',
+                controller: _questionController,
+              ),
+              const SizedBox(height: 20.0),
+              AddQuestionOption(
+                hintText: 'Option1',
+                isOptionCorrect: _isOption1Correct,
+                optionController: _option1Controller,
+                onChange: (value) {
+                  setState(() {
+                    _isOption1Correct = value!;
+                    // Uncheck the other options if this is checked
+                    if (_isOption1Correct) {
+                      _isOption2Correct = false;
+                      _isOption3Correct = false;
+                      _isOption4Correct = false;
+                    }
+                  });
+                },
+              ),
+              const SizedBox(height: 8.0),
+              AddQuestionOption(
+                hintText: 'Option2',
+                optionController: _option2Controller,
+                isOptionCorrect: _isOption2Correct,
+                onChange: (value) {
+                  setState(() {
+                    _isOption2Correct = value!;
+                    // Uncheck the other options if this is checked
+                    if (_isOption2Correct) {
+                      _isOption1Correct = false;
+                      _isOption3Correct = false;
+                      _isOption4Correct = false;
+                    }
+                  });
+                },
+              ),
+              const SizedBox(height: 8.0),
+              AddQuestionOption(
+                hintText: 'Option3',
+                optionController: _option3Controller,
+                isOptionCorrect: _isOption3Correct,
+                onChange: (value) {
+                  setState(() {
+                    _isOption3Correct = value!;
+                    // Uncheck the other options if this is checked
+                    if (_isOption3Correct) {
+                      _isOption1Correct = false;
+                      _isOption2Correct = false;
+                      _isOption4Correct = false;
+                    }
+                  });
+                },
+              ),
+              const SizedBox(height: 8.0),
+              AddQuestionOption(
+                hintText: 'Option4',
+                optionController: _option4Controller,
+                isOptionCorrect: _isOption4Correct,
+                onChange: (value) {
+                  setState(() {
+                    _isOption4Correct = value!;
+                    // Uncheck the other options if this is checked
+                    if (_isOption4Correct) {
+                      _isOption1Correct = false;
+                      _isOption2Correct = false;
+                      _isOption3Correct = false;
+                    }
+                  });
+                },
+              ),
+              const SizedBox(height: 16.0),
+              CustomButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    if (checkOnCheckBoxes()) {
+                      QuizModel quizModel = QuizModel(
+                        title: _questionController.text,
+                        options: {
+                          _option1Controller.text: _isOption1Correct,
+                          _option2Controller.text: _isOption2Correct,
+                          _option3Controller.text: _isOption3Correct,
+                          _option4Controller.text: _isOption4Correct,
+                        },
+                      );
 
-                BlocProvider.of<AddGenQuestionsCubit>(context)
-                    .addGenQuestions(quizModel: quizModel)
-                    .then(
-                  (value) {
-                    showSnakeBar(context, "Question Added successfully");
-                    resetVariables();
-                  },
-                );
-              },
-              child: const Text('Add Question'),
-            ),
-          ],
+                      BlocProvider.of<AddGenQuestionsCubit>(context)
+                          .addGenQuestions(quizModel: quizModel)
+                          .then(
+                        (value) {
+                          showSnakeBar(context, "Question Added successfully");
+                          resetVariables();
+                        },
+                      );
+                    } else {
+                      showSnakeBar(
+                        context,
+                        "You have to check one answer",
+                        color: Colors.red,
+                      );
+                    }
+                  }
+                },
+                text: 'Add Question',
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -161,6 +177,17 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
     _isOption2Correct = false;
     _isOption3Correct = false;
     _isOption4Correct = false;
+  }
+
+  bool checkOnCheckBoxes() {
+    if (_isOption1Correct == false &&
+        _isOption2Correct == false &&
+        _isOption3Correct == false &&
+        _isOption4Correct == false) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   @override

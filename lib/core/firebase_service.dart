@@ -1,12 +1,9 @@
 import 'dart:convert';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:quiz_app/models/quiz_model.dart';
 
 class DBConnect {
- 
-
   var url = Uri.parse(
       "https://quiz-app-50bcb-default-rtdb.firebaseio.com/genQuestions.json");
 
@@ -56,6 +53,46 @@ class DBConnect {
       return questions;
     } catch (error) {
       throw Exception(error.toString);
+    }
+  }
+
+  Future<void> signInUser({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw Exception('User not found');
+      } else if (e.code == 'wrong-password') {
+        throw Exception('Wrong password provided for that user.');
+      }
+    } catch (e) {
+      throw Exception('Wrong password provided for that user.');
+    }
+  }
+
+  Future<void> registerUser({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        throw Exception('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        throw Exception('The account already exists for that email.');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 }

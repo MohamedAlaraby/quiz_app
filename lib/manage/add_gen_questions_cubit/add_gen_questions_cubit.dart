@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/core/firebase_service.dart';
-import 'package:quiz_app/core/service_locator.dart';
+import 'package:quiz_app/core/utils/service_locator.dart';
 import 'package:quiz_app/models/quiz_model.dart';
 part 'add_gen_questions_state.dart';
 
