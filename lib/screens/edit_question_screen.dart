@@ -67,8 +67,11 @@ class EditQuestionScreenState extends State<EditQuestionScreen> {
         title: const Text('Edit Question'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: ListView(
+            physics: const BouncingScrollPhysics(),
+                reverse: true,
+
           children: [
             CustomTextField(
               hintText: 'Enter Question',
@@ -166,7 +169,7 @@ class EditQuestionScreenState extends State<EditQuestionScreen> {
               },
               text: 'Edit',
             ),
-          ],
+          ].reversed.toList(),
         ),
       ),
     );

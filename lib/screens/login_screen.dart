@@ -21,9 +21,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 50,
+        padding: const EdgeInsets.only(
+          top: 40,
+          bottom: 16,
+          right: 16,
+          left: 16,
         ),
         child: Form(
           key: formKey,
@@ -46,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
             },
             builder: (context, state) {
               return ListView(
+                physics: const BouncingScrollPhysics(),
+                reverse: true,
                 children: [
                   Card(
                     clipBehavior: Clip.antiAlias,
@@ -107,33 +111,36 @@ class _LoginScreenState extends State<LoginScreen> {
                             "Register",
                           ),
                   ),
-                  Row(
-                    children: [
-                      const Text(
-                        "Don't have an account?  ",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                      TextButton(
-                        child: const Text(
-                          "Register",
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: Row(
+                      children: [
+                        const Text(
+                          "Don't have an account?  ",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
                           ),
                         ),
-                        onPressed: () {
-                          // Navigator.push(context, );
-                        },
-                      ),
-                    ],
+                        TextButton(
+                          child: const Text(
+                            "Register",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                          onPressed: () {
+                            // Navigator.push(context, );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  )
-                ],
+                  const SizedBox(height: 16)
+                ].reversed.toList(),
               );
             },
           ),

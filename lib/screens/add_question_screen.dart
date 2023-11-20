@@ -48,10 +48,12 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
         title: const Text('Add Question'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: formKey,
           child: ListView(
+                physics: const BouncingScrollPhysics(),
+                reverse: true,
             children: [
               CustomTextField(
                 hintText: 'Enter Question',
@@ -159,7 +161,7 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
                 },
                 text: 'Add Question',
               ),
-            ],
+            ].reversed.toList(),
           ),
         ),
       ),

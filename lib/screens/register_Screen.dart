@@ -21,9 +21,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 50,
+        padding: const EdgeInsets.only(
+          top: 40,
+          bottom: 16,
+          right: 16,
+          left: 16,
         ),
         child: Form(
           key: formKey,
@@ -41,12 +43,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   MaterialPageRoute(
                     builder: (context) => const HomeScreen(),
                   ),
-
                 );
               }
             },
             builder: (context, state) {
               return ListView(
+                  physics: const BouncingScrollPhysics(),
+                  reverse: true,
                 children: [
                   Card(
                     clipBehavior: Clip.antiAlias,
@@ -134,7 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(
                     height: 10,
                   )
-                ],
+                ].reversed.toList(),
               );
             },
           ),
