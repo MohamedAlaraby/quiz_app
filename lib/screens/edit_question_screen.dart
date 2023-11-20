@@ -68,8 +68,7 @@ class EditQuestionScreenState extends State<EditQuestionScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: ListView(
           children: [
             CustomTextField(
               hintText: 'Enter Question',

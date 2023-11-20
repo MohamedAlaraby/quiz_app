@@ -41,6 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   MaterialPageRoute(
                     builder: (context) => const HomeScreen(),
                   ),
+
                 );
               }
             },
@@ -131,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ],
                   ),
                   const SizedBox(
-                    height: 40,
+                    height: 10,
                   )
                 ],
               );

@@ -51,8 +51,7 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: ListView(
             children: [
               CustomTextField(
                 hintText: 'Enter Question',
