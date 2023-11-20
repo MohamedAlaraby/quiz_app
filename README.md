@@ -1,6 +1,8 @@
 # quiz_app
 
-A new Flutter project.
+If you want to be an admin to the app to be able to add questions and modify each question ,when you login use this email and password
+#email :admin@gmail.com.
+#password:123456
 
 ## Getting Started
 
