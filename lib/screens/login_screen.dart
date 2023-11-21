@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/core/utils/helper_methods.dart';
 import 'package:quiz_app/manage/auth_cubit/auth_cubit.dart';
 import 'package:quiz_app/screens/home_screen.dart';
+import 'package:quiz_app/screens/register_screen.dart';
 import 'package:quiz_app/widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -58,11 +59,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: Image.asset(
                       "assets/images/quiz.jpg",
-                      height: 200,
+                      height: 250,
+                      fit: BoxFit.fill,
                     ),
                   ),
                   const SizedBox(
-                    height: 75,
+                    height: 40,
                   ),
                   const SizedBox(
                     width: double.infinity,
@@ -103,12 +105,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: state is AuthLoadingState
                         ? const Padding(
                             padding: EdgeInsets.all(8),
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                            ),
+                            child: CircularProgressIndicator(),
                           )
                         : const Text(
-                            "Register",
+                            "Login",
                           ),
                   ),
                   Padding(
@@ -133,7 +133,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           onPressed: () {
-                            // Navigator.push(context, );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (c) => const RegisterScreen(),
+                              ),
+                            );
                           },
                         ),
                       ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiz_app/core/utils/helper_methods.dart';
 import 'package:quiz_app/manage/edit_question_cubit/edit_question_cubit.dart';
+import 'package:quiz_app/manage/get_gen_questions_cubit/get_gen_questions_cubit.dart';
 import 'package:quiz_app/models/quiz_model.dart';
 import 'package:quiz_app/widgets/add_ques_option_widget.dart';
 import 'package:quiz_app/widgets/custom_button.dart';
@@ -69,9 +70,7 @@ class EditQuestionScreenState extends State<EditQuestionScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
-            physics: const BouncingScrollPhysics(),
-                reverse: true,
-
+          physics: const BouncingScrollPhysics(),
           children: [
             CustomTextField(
               hintText: 'Enter Question',
@@ -163,13 +162,16 @@ class EditQuestionScreenState extends State<EditQuestionScreen> {
                     .editQuestion(quizModel: quizModel)
                     .then(
                   (value) {
+                    BlocProvider.of<GetGenQuestionsCubit>(context)
+                        .getGenQuestions();
                     showSnakeBar(context, "Question Edited successfully");
+                    
                   },
                 );
               },
               text: 'Edit',
             ),
-          ].reversed.toList(),
+          ],
         ),
       ),
     );

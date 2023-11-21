@@ -37,14 +37,9 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              BlocProvider.of<GetGenQuestionsCubit>(context).getGenQuestions();
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-            )),
+        leading: const Icon(
+          Icons.arrow_back,
+        ),
         title: const Text('Add Question'),
       ),
       body: Padding(
@@ -52,8 +47,7 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
         child: Form(
           key: formKey,
           child: ListView(
-                physics: const BouncingScrollPhysics(),
-                reverse: true,
+            physics: const BouncingScrollPhysics(),
             children: [
               CustomTextField(
                 hintText: 'Enter Question',
@@ -146,7 +140,11 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
                           .addGenQuestions(quizModel: quizModel)
                           .then(
                         (value) {
+                          BlocProvider.of<GetGenQuestionsCubit>(context)
+                              .getGenQuestions();
+
                           showSnakeBar(context, "Question Added successfully");
+
                           resetVariables();
                         },
                       );
@@ -161,7 +159,7 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
                 },
                 text: 'Add Question',
               ),
-            ].reversed.toList(),
+            ],
           ),
         ),
       ),
@@ -178,6 +176,7 @@ class AddQuestionScreenState extends State<AddQuestionScreen> {
     _isOption2Correct = false;
     _isOption3Correct = false;
     _isOption4Correct = false;
+    setState(() {});
   }
 
   bool checkOnCheckBoxes() {

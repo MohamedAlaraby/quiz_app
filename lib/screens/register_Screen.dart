@@ -48,8 +48,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             },
             builder: (context, state) {
               return ListView(
-                  physics: const BouncingScrollPhysics(),
-                  reverse: true,
+                physics: const BouncingScrollPhysics(),
+                reverse: true,
                 children: [
                   Card(
                     clipBehavior: Clip.antiAlias,
@@ -58,11 +58,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     child: Image.asset(
                       "assets/images/quiz.jpg",
-                      height: 200,
+                      height: 250,
+                      fit: BoxFit.fill,
                     ),
                   ),
                   const SizedBox(
-                    height: 75,
+                    height: 40,
                   ),
                   const SizedBox(
                     width: double.infinity,
